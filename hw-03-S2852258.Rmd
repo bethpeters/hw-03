@@ -62,7 +62,10 @@ gss16_advfront <- gss16_advfront %>%
 #### Exercise 1 (a)
 
 ```{r}
-# replace this with your code
+ggplot(data = gss16_advfront,
+       mapping = aes( x = educ,
+                      y = emailhr)) +
+  geom_point()
 ```
 
 *Your answer here*
