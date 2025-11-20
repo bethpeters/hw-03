@@ -154,10 +154,24 @@ gss16_pred %>%
 #### Exercise 3 (b)
 
 ```{r}
-# replace this with your code
+cutoff_prob <- 0.83
+cutoff_table <- gss16_pred %>%
+  mutate(
+    advfront_pred = if_else(.pred_Agree > cutoff_prob, "Predicted Agree", "Predicted Disagree")  
+    ) %>%
+      count(advfront_pred, advfront) %>%
+      pivot_wider(names_from = advfront, values_from = n)
+
+cutoff_table
+
+#sensitivity = 1 - False Negative Rate
+#specificity = 1 - False Positive Rate
+#False Negative Rate = False Negative/(True Positive + False Negative)
+#False Positive Rate = False Positive/(False Positive + True Negative)
+
 ```
 
-*Your answer here*
+*sensitivity = 1 - (18/(147+18))/293 = 0.99963, specificity = 1 - (10/(10+118))/293 = 0.99973*
 
 ## Exercise 4: Logistic regression modelling and interpretation
 
