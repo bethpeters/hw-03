@@ -81,7 +81,7 @@ ggplot(data = gss16_advfront,
 
 ```
 
-*Your answer here*
+*The model is not suitable, as the data is not continious, but discrete. There is also no clear trend within the plot, as the data is very far spread from the line of best fit.*
 
 ## Exercise 2: Create a workflow to fit a model
 
@@ -98,7 +98,7 @@ gss16_test  <- testing(gss16_split)
 gss16_rec_1 <- recipe(educ ~ advfront, data = gss16_train)
   
 gss16_mod_1 <- linear_reg() %>%
-  set_engine("lm")
+  set_engine("glm")
 
 gss16_wflow_1 <- workflow() %>%
   add_model(gss16_mod_1) %>%
@@ -110,7 +110,7 @@ gss16_wflow_1 <- workflow() %>%
 #### Exercise 2 (b)
 
 ```{r}
-# replace this with your code
+# I chose a logistic model, as the data is categoric, and so a linear model is not suitable.
 ```
 
 *Your answer here*
@@ -118,7 +118,10 @@ gss16_wflow_1 <- workflow() %>%
 #### Exercise 2 (c)
 
 ```{r}
-# replace this with your code
+gss_fit_1 <- gss16_wflow_1 %>%
+  fit(data = gss16_train)
+
+tidy(gss_fit_1)
 ```
 
 *Your answer here*
