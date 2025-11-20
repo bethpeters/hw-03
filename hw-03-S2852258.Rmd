@@ -62,17 +62,20 @@ gss16_advfront <- gss16_advfront %>%
 #### Exercise 1 (a)
 
 ```{r}
-linear_reg() %>%
+gss16_linear <- linear_reg() %>%
   set_engine("lm")%>%
-  fit(educ ~ emailhr, data = gss16_advfront) %>%
-  tidy()
+  fit(emailhr ~ educ, data = gss16_advfront)
+
+tidy(gss16_linear)
 ```
 
-*Line of best fit formula: ŷ = 13.7 + 0.04x. This means that the estimate for the mean value of emailhr is 14.1*
+*Line of best fit formula: ŷ = -2.76 + 0.69x. This means that the estimate for the mean value of educ is -2.07*
 
 #### Exercise 1 (b)
 
 ```{r}
+glance(gss16_linear)
+
 ggplot(data = gss16_advfront,
        mapping = aes( x = educ,
                       y = emailhr)) +
@@ -81,7 +84,7 @@ ggplot(data = gss16_advfront,
 
 ```
 
-*The model is not suitable, as the data is not continious, but discrete. There is also no clear trend within the plot, as the data is very far spread from the line of best fit.*
+*The model is not suitable, as the data is not continious, but discrete. There is also no clear trend within the plot, as the data is very far spread from the line of best fit. Furthermore the r squared value is *
 
 ## Exercise 2: Create a workflow to fit a model
 
@@ -95,9 +98,9 @@ gss16_test  <- testing(gss16_split)
 #### Exercise 2 (a)
 
 ```{r}
-gss16_rec_1 <- recipe(educ ~ advfront, data = gss16_train)
+gss16_rec_1 <- recipe(advfront ~ educ, data = gss16_train)
   
-gss16_mod_1 <- linear_reg() %>%
+gss16_mod_1 <- logistic_reg() %>%
   set_engine("glm")
 
 gss16_wflow_1 <- workflow() %>%
@@ -110,7 +113,7 @@ gss16_wflow_1 <- workflow() %>%
 #### Exercise 2 (b)
 
 ```{r}
-# I chose a logistic model, as the data is categoric, and so a linear model is not suitable.
+# I chose a logistic model, as the data is categorical, and so a linear model is not suitable.
 ```
 
 *Your answer here*
@@ -118,10 +121,11 @@ gss16_wflow_1 <- workflow() %>%
 #### Exercise 2 (c)
 
 ```{r}
-gss_fit_1 <- gss16_wflow_1 %>%
+gss16_fit_1 <- gss16_wflow_1 %>%
   fit(data = gss16_train)
 
-tidy(gss_fit_1)
+gss16_fit_1 %>%
+  tidy()
 ```
 
 *Your answer here*
@@ -131,7 +135,18 @@ tidy(gss_fit_1)
 #### Exercise 3 (a)
 
 ```{r}
-# replace this with your code
+gss16_pred <- predict(gss16_fit_1, gss16_test, type = "prob") %>%
+  bind_cols(gss16_test %>% select (advfront, educ))
+
+gss16_pred
+
+gss16_pred %>%
+  roc_curve(
+    truth = advfront,
+    .pred_Agree,
+    event_level = "second"
+  ) %>%
+  autoplot()
 ```
 
 *Your answer here*
