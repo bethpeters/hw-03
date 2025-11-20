@@ -178,7 +178,17 @@ cutoff_table
 #### Exercise 4 (a)
 
 ```{r}
-# replace this with your code
+gss16_rec_2 <- recipe(advfront ~ polviews, wrkstate, emailhr, educ, data = gss16_train) %>%
+  step_dummy(all_nominal(), -all_outcomes()) 
+  
+  
+gss16_mod_2 <- logistic_reg() %>%
+  set_engine("glm")
+
+gss16_wflow_2 <- workflow() %>%
+  add_model(gss16_mod_2) %>%
+  add_recipe(gss16_rec_2)
+
 ```
 
 *Your answer here*
@@ -186,7 +196,24 @@ cutoff_table
 #### Exercise 4 (b)
   
 ```{r}
-# replace this with your code
+gss16_fit_2 <- gss16_wflow_2 %>%
+  fit(data = gss16_train)
+
+gss16_fit_2 %>%
+  tidy()
+
+gss16_pred_2 <- predict(gss16_fit_2, gss16_test, type = "prob") %>%
+  bind_cols(gss16_test %>% select (advfront, educ, polviews, wrkstat, emailhr))
+
+gss16_pred_2
+
+gss16_pred_2 %>%
+  roc_curve(
+    truth = advfront,
+    .pred_Agree,
+    event_level = "second"
+  ) %>%
+  autoplot()
 ```
 
 *Your answer here*
