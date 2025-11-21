@@ -157,6 +157,7 @@ gss16_pred %>%
 cutoff_prob <- 0.83
 cutoff_table <- gss16_pred %>%
   mutate(
+    advfront = if_else(advfront == "Agree", "Agree", "Disagree"),
     advfront_pred = if_else(.pred_Agree > cutoff_prob, "Predicted Agree", "Predicted Disagree")  
     ) %>%
       count(advfront_pred, advfront) %>%
@@ -171,14 +172,15 @@ cutoff_table
 
 ```
 
-*sensitivity = 1 - (18/(147+18))/293 = 0.99963, specificity = 1 - (10/(10+118))/293 = 0.99973*
+*Sensitivity is 1 - (118/(118+147)) = 0.556 and Specificity is 1 - (10/10+18) = 0.643*
 
 ## Exercise 4: Logistic regression modelling and interpretation
 
 #### Exercise 4 (a)
 
 ```{r}
-gss16_rec_2 <- recipe(advfront ~ polviews, wrkstate, emailhr, educ, data = gss16_train) %>%
+gss16_rec_2 <- recipe(advfront ~ polviews + wrkstat + emailhr + educ, 
+                      data = gss16_train) %>%
   step_dummy(all_nominal(), -all_outcomes()) 
   
   
@@ -203,7 +205,7 @@ gss16_fit_2 %>%
   tidy()
 
 gss16_pred_2 <- predict(gss16_fit_2, gss16_test, type = "prob") %>%
-  bind_cols(gss16_test %>% select (advfront, educ, polviews, wrkstat, emailhr))
+  bind_cols(gss16_test)
 
 gss16_pred_2
 
@@ -214,6 +216,13 @@ gss16_pred_2 %>%
     event_level = "second"
   ) %>%
   autoplot()
+
+gss16_pred_2 %>%
+roc_auc(
+  truth = advfront,
+  .pred_Agree,
+  event_level = "second")
+
 ```
 
 *Your answer here*
@@ -221,8 +230,14 @@ gss16_pred_2 %>%
 #### Exercise 4 (c) 
 
 ```{r}
-# replace this with your code
+#Area under the second curve
+gss16_pred %>%
+  roc_auc(
+    truth = advfront,
+    .pred_Agree,
+    event_level = "second"
+  )
 ```
 
-*Your answer here*
+*The first model performs better, as the area under the ROC curve is larger than that under the second curve.*
 
