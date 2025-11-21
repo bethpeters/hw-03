@@ -69,7 +69,7 @@ gss16_linear <- linear_reg() %>%
 tidy(gss16_linear)
 ```
 
-*Line of best fit formula: ŷ = -2.76 + 0.69x. This means that the estimate for the mean value of educ is -2.07*
+*Line of best fit formula: ŷ = -2.76 + 0.69x. The emailhr estimate is -2.76, this means that when educ is 0, the time spent on emails is estimated to be -2.76*
 
 #### Exercise 1 (b)
 
@@ -84,7 +84,7 @@ ggplot(data = gss16_advfront,
 
 ```
 
-*The model is not suitable, as the data is not continious, but discrete. There is also no clear trend within the plot, as the data is very far spread from the line of best fit. Furthermore the r squared value is *
+*The model is not suitable, as the data is not continuous, but discrete. There is also no clear trend within the plot, as the data is very far spread from the line of best fit. Furthermore the r squared value is 0.029 which shows that the model is not a good fit.*
 
 ## Exercise 2: Create a workflow to fit a model
 
